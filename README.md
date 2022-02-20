@@ -1,7 +1,7 @@
 # tashares
 
 Tashares is a python module to forecast China A-shares price trend in 1, 2 and 5 days.
-It's an open-source tool, that wraps up **yfinance** and **talib** to generate 155 techinical analysis features, and then apply **catboost** to build three ranking models that order all stock prices of interest from trending up to trending down relatively.
+It's an open-source tool, that utilizes **yfinance** and **talib** to generate 155 techinical analysis features, and then apply **catboost** to build three ranking models that order all stock prices of interest from trending up to trending down relatively.
 
 # installation
 
@@ -89,7 +89,8 @@ Here are the test metrics for the model to predict next day's trending:
 |ranking RecallAt:top=20 |0.017115635510283153|
 
 Here is a real-world experiment lasting half year so far. The dotted vertical line indicates the date of forecasting launch, coupled with certain trading strategy.
-![snapshot](/docs/snapshot.jpg)
+
+<img src="./tashares/docs/snapshot.png" alt="drawing" width="300"/>
 
 On US stocks, the same approach shows much worse ranking metrics that hasn't been applied to real world.
 
