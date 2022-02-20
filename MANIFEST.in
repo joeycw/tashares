@@ -1,5 +1,6 @@
-include tashares *.py
-include tashares *.ini
+recursive-include tashares *.ini
+recursive-include tashares *.png
+recursive-include tashares *.py
 include tashares/data *
 include README.md
 include LICENSE

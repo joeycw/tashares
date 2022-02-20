@@ -12,7 +12,7 @@ def my_test_suite():
 setup(name='tashares',
       version='0.1.2',
       description='a TA model for China A-Shares',
-      long_description='',
+      long_description=open('README.md', 'r').read(),
       url='https://github.com/joeycw/tashares',
       author='joey.cw',
       author_email='joey.cw@protonmail.com',
