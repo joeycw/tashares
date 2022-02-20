@@ -5,7 +5,21 @@ It's an open-source tool, that utilizes **yfinance** and **talib** to generate 1
 
 # installation
 
-This is the recommended way to install tashares:
+TA Lib (technical analysis library) is a prerequisite, which can be installed from source code <https://ta-lib.org/hdr_dw.html>.
+
+On a Linux machine, download source code <a href="http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz"> ta-lib-0.4.0-src.tar.gz </a>, and then run the following to complete installation.
+
+```
+tar -xzf ta-lib-0.4.0-src.tar.gz
+cd ta-lib/
+./configure --prefix=/usr
+make
+sudo make install
+```
+
+Ref to <a href="https://pypi.org/project/TA-Lib/">Python wrapper for TA-LIB</a> for installatiob instructions on ther platforms.
+
+Then this is the recommended way to install tashares:
 
 ```
 pip install tashares
