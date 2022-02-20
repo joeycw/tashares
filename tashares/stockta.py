@@ -31,8 +31,6 @@ class Stockta(Stockhist):
         ta.reset_index(drop=False, inplace=True)
         ta.columns = ta.columns.str.lower()
 
-        #data = pd.Series(ta)
-        #data = series.to_numpy()
         data = {
             'open': ta['open'].to_numpy(dtype='double', na_value=0),
             'high': ta['high'].to_numpy(dtype='double', na_value=0),
@@ -51,28 +49,16 @@ class Stockta(Stockhist):
                 ta_func = abstract.Function(func)
 
                 # skip the following
-                if ta_func.info['name'] in ['MAVP', 'ACOS', 'ASIN', 'COSH', 'SINH', 'EXP', 'MINMAXINDEX']:
+                if ta_func.info['name'] in ['MAVP', 'MINMAXINDEX']:
                     continue
 
                 result = ta_func(data)
 
-                # modify minindex and maxindex, add more variants later
-                if ta_func.info['name'] in ['MININDEX', 'MAXINDEX']:
-                    result = ta.index - result
-
-                #print(f"{group} {ta_func.info['name']}")
-
                 if isinstance(result, list):  # multiple outputs
-                    index = 0
-                    for output in ta_func.info['output_names']:
+                    for index, output in enumerate(ta_func.info['output_names']):
                         ta = pd.concat([ta, pd.DataFrame(result[index], columns=[
                                        ta_func.info['name'].lower() + '_' + output.lower()])], axis=1)
-                        # ta[ta_func.info['name'].lower() +
-                        #  '_' + output.lower()] = result[index]
-                        index += 1
                 else:
-                    # ta = pd.concat([ta, result.to_frame().rename(
-                    #    columns={0: ta_func.info['name'].lower()})], axis=1)
                     ta = pd.concat([ta, pd.DataFrame(result, columns=[ta_func.info['name'].lower()])], axis=1)
 
         logging.info(f" {self.symbol} : {len(ta)} samples, {len(ta.columns)} ta features")

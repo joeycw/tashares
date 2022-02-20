@@ -33,7 +33,7 @@ def get_stockjob(symbol):
 def wrap_stockjobs(symbols_file: str, **kwargs):
     '''generate training/test/forecasting data files
         - Input: a file of stock symbol list.
-        - Output: a dictionary of three pandas dataframes for training/test/forecasting data respectively
+        - Output: a dictionary of three pandas dataframes for training/test/forecasting data respectively.
     Args:
         symbols_file (string, required): the file of stock symbol list.
         data_dir (string, required): the directory for data files which needs exist already.
@@ -85,7 +85,7 @@ def wrap_stockjobs(symbols_file: str, **kwargs):
 def dump_stockjobs(jobname, data_dir: Path, **data):
 
     if not data_dir.is_dir():
-        logging.info(f"{data_dir} doesn't exist")
+        logging.warning(f"{data_dir} doesn't exist")
     else:
         for key in data.keys():
             filename = data_dir / f"{key}_{jobname}.csv"
@@ -97,16 +97,23 @@ def dump_stockjobs(jobname, data_dir: Path, **data):
             logging.info(f"{key} {len(data[key])} samples saved in {filename}")
 
 
-def dump_datafiles():
+def dump_datafiles(symbol_list='', data_dir=''):
+    '''save training/test/forecasting data into files
+        - Input: a file of stock symbol list.
+        - Output: three csv files for training/test/forecasting data respectively under the folder data_dir.
+    Args:
+        symbol_list (string, optional): the file of stock symbol list. Default: 'SymbolList' in cfg.ini
+        data_dir (string, optional): the directory to save files. Default: current working directory
+    '''
 
+    if data_dir == '':
+        data_dir = Path.cwd()
+    if symbol_list == '':
+        symbol_list = Path(__file__).parent / 'data/' / config['ashares']['SymbolList']
     for section in config.sections():
-        data_dir = config[section]['DataDirectory']
-        if data_dir == '':
-            data_dir = Path(__file__).parent / 'data/'
-        symbols_file = data_dir / config[section]['SymbolsOfInterest']  # SymbolsOfInterest, SymbolList
         data = wrap_stockjobs(
-            symbols_file,
-            data_dir=config[section]['DataDirectory'],
+            symbol_list,
+            data_dir=data_dir,
             start_from_date=config['DEFAULT']['StartFromDate'],
             max_training_date=config['DEFAULT']['MaxTrainingDate'],
             forefast_only=False,

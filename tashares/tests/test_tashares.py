@@ -1,10 +1,8 @@
 import unittest
-from tashares.tests import tashares_context
+from pathlib import Path
 from tashares.stockta import Stockta
 from tashares.tashares import Tashares
-#import tashares_context
-#from stockta import Stockta
-#from tashares import Tashares
+from tashares.wrapper import dump_datafiles
 
 
 class TestTashares(unittest.TestCase):
@@ -21,6 +19,7 @@ class TestTashares(unittest.TestCase):
         result = tas()
         self.assertGreaterEqual(len(result), 0)
 
-
-# if __name__ == '__main__':
-#    unittest.main()
+    def test_dumpfiles(self):
+        data_dir = Path(__file__).parent.parent
+        result = dump_datafiles(data_dir / 'data/list_of_interest')
+        self.assertEqual(result, None)

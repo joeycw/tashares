@@ -10,7 +10,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
 
 
 class Stockmeta(Stockta):
-    """load/update stock info
+    """load/update stock info, include company name, sector, industry ...
     """
 
     infofolder = config['DEFAULT']['InfoFolder']

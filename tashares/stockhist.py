@@ -4,7 +4,6 @@ import pandas as pd
 from datetime import datetime
 from pathlib import Path
 import logging
-
 from tashares.cfg import config
 
 logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',

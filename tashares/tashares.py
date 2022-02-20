@@ -21,20 +21,26 @@ class Tashares(object):
         symbol_list (string, optional): the file name of symbol list. Default: 'list_of_interest' under the folder 'data'
 
     Examples:
-        >>> from tashares import Tashares
+        >>> from tashares.tashares import Tashares
         >>> tas = Tashares()
         >>> tas()
         >>> tas = Tashares(symbol_list="/absolute/path/to/list_of_ashares")
+        >>> tas()
+        >>> tas = Tashares("/absolute/path/to/list_of_ashares")
+        >>> tas()
     """
+
+    models_files = config['ashares']['ModelList'].split(',')
+    today = datetime.date.today().strftime('%Y-%m-%d')
+    start_from_date = (datetime.date.today() - datetime.timedelta(days=180)).strftime('%Y-%m-%d')
 
     def __init__(self, *args, **kwargs):
 
         self.data_dir = Path(__file__).parent / 'data/'
-        self.symbol_list = kwargs.get('symbol_list', self.data_dir / 'list_of_interest') if len(args) == 0 else args[0]
-        self.models_files = config['ashares']['ModelList'].split(',')
-        self.today = datetime.date.today().strftime('%Y-%m-%d')
-        self.start_from_date = (datetime.date.today() - datetime.timedelta(days=180)).strftime('%Y-%m-%d')
-        self.results_file = f'{self.symbol_list}_{self.today}.csv'
+        self.symbol_list = kwargs.get('symbol_list', self.data_dir /
+                                      config['ashares']['SymbolsOfInterest']) if len(args) == 0 else args[0]
+        self.results_file = kwargs.get('results_to_file', '')
+        #self.results_file = f'{self.symbol_list}_{self.today}.csv'
 
     def forecast(self):
 
@@ -78,15 +84,17 @@ class Tashares(object):
         print(result)
 
         # save prediction
-        result.to_csv(self.results_file, sep='\t', encoding='utf-8',
-                      index=False, float_format='%.5f')
-        logging.info(f" today: {self.today}")
-        logging.info(f" symbol list: {self.symbol_list}")
-        print(f"results of {len(result)} ashares saved in {self.results_file}")
+        if self.results_file != '':
+            result.to_csv(self.results_file, sep='\t', encoding='utf-8',
+                          index=False, float_format='%.5f')
+            logging.info(f" today: {self.today}")
+            logging.info(f" symbol list: {self.symbol_list}")
+            logging.info(f"results of {len(result)} ashares saved in {self.results_file}")
+
+        #from sendemail import send_mail
+        #send_mail([f"{self.results_file}", ])
+
         return result
 
     def __call__(self,  *args, **kwargs):
         return self.forecast()
-
-        #from sendemail import send_mail
-        #send_mail([f"{self.results_file}", ])
