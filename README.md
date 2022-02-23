@@ -71,7 +71,8 @@ Once a customized symbol list of interest is available, run the following to pro
 
 ```
 >>> tas = Tashares(symbol_list="/absolute/path/to/list_of_ashares")
->>> tas()
+>>> result = tas()
+>>> print(result)
 ```
 
 The format of symbol list is the following. There is a longer list *list_of_all* of more than 1000 under the *data* folder.

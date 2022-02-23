@@ -1,12 +1,8 @@
 recursive-include tashares *.ini
 recursive-include tashares *.png
 recursive-include tashares *.py
-include tashares/data/day_1
-include tashares/data/day_2
-include tashares/data/day_5
-include tashares/data/list_of_all
-include tashares/data/list_of_interest
+include tashares/data/ashares/*
+include tashares/data/stocks/*
 include README.md
 include LICENSE
 include requirements.txt
-exclude tashares/docs/sendemail.py

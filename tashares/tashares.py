@@ -91,6 +91,8 @@ class Tashares(object):
         result.reset_index(drop=True, inplace=True)
         result.insert(0, 'rank', result.index)
 
+        logging.info(f"{result}")
+
         # save prediction
         if self.results_file != '':
             result.to_csv(self.results_file, sep='\t', encoding='utf-8',
