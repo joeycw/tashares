@@ -81,11 +81,6 @@ class Stockjob(Stockmeta):
         if 'symbol' not in self.features.columns:
             self.features.insert(0, 'symbol', self.ticker.ticker)
 
-        # add queryid
-        self.features['tag'] = np.random.randint(0, 100, len(self.features))
-        self.features['queryid'] = self.features['date'].dt.strftime(
-            '%Y-%m-%d---') + self.features['tag'].apply(str)
-
         for key in ['shortName', 'sector', 'industry']:
             if key.lower() not in self.features.columns:
                 if key in self.info:
@@ -96,6 +91,11 @@ class Stockjob(Stockmeta):
                     result = 'unknown'
                 self.features.insert(len(self.features.columns), key.lower(),
                                      result.replace(' ', '_').lower())
+
+        # add queryid
+        self.features['tag'] = np.random.randint(0, 1000, len(self.features))
+        self.features['queryid'] = self.features['date'].dt.strftime(
+            '%Y-%m-%d---') + self.features['sector'].apply(str)
 
     def split_jobs(self, forecast_only=False) -> dict:
 

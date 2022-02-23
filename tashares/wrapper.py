@@ -82,13 +82,13 @@ def wrap_stockjobs(symbols_file: str, **kwargs):
     return data
 
 
-def dump_stockjobs(jobname, data_dir: Path, **data):
+def dump_stockjobs(task_type, data_dir: Path, **data):
 
     if not data_dir.is_dir():
         logging.warning(f"{data_dir} doesn't exist")
     else:
         for key in data.keys():
-            filename = data_dir / f"{key}_{jobname}.csv"
+            filename = data_dir / f"{key}_{task_type}.csv"
             if filename.exists():
                 logging.warning(f"{filename} already exists, skip dumping")
                 continue
@@ -97,7 +97,7 @@ def dump_stockjobs(jobname, data_dir: Path, **data):
             logging.info(f"{key} {len(data[key])} samples saved in {filename}")
 
 
-def dump_datafiles(symbol_list='', data_dir=''):
+def dump_datafiles(symbol_list='', data_dir='', task_type='ashares'):
     '''save training/test/forecasting data into files
         - Input: a file of stock symbol list.
         - Output: three csv files for training/test/forecasting data respectively under the folder data_dir.
@@ -109,18 +109,17 @@ def dump_datafiles(symbol_list='', data_dir=''):
     if data_dir == '':
         data_dir = Path.cwd()
     if symbol_list == '':
-        symbol_list = Path(__file__).parent / 'data/' / config['ashares']['SymbolList']
-    for section in config.sections():
-        data = wrap_stockjobs(
-            symbol_list,
-            data_dir=data_dir,
-            start_from_date=config['DEFAULT']['StartFromDate'],
-            max_training_date=config['DEFAULT']['MaxTrainingDate'],
-            forefast_only=False,
-            dump_files=False,
-            update_history=True,
-        )
-        dump_stockjobs(section, Path(data_dir), **data,)
+        symbol_list = Path(__file__).parent / 'data/ashares/' / config['ashares']['SymbolList']
+
+    data = wrap_stockjobs(
+        symbol_list,
+        data_dir=data_dir,
+        start_from_date=config['DEFAULT']['StartFromDate'],
+        max_training_date=config['DEFAULT']['MaxTrainingDate'],
+        forefast_only=False,
+        dump_files=False,
+        update_history=True,)
+    dump_stockjobs(task_type, Path(data_dir), **data,)
 
 
 if __name__ == '__main__':

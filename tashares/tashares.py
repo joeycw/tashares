@@ -19,6 +19,8 @@ class Tashares(object):
 
     Args:
         symbol_list (string, optional): the file name of symbol list. Default: 'list_of_interest' under the folder 'data'
+        task_type (string, optional): China 'ashares' or US 'stocks'. Default: 'ashares'
+        results_to_file (string, optional): the file to save results. Default: '' don't dump results
 
     Examples:
         >>> from tashares.tashares import Tashares
@@ -30,17 +32,23 @@ class Tashares(object):
         >>> tas()
     """
 
-    models_files = config['ashares']['ModelList'].split(',')
     today = datetime.date.today().strftime('%Y-%m-%d')
     start_from_date = (datetime.date.today() - datetime.timedelta(days=180)).strftime('%Y-%m-%d')
 
     def __init__(self, *args, **kwargs):
 
-        self.data_dir = Path(__file__).parent / 'data/'
-        self.symbol_list = kwargs.get('symbol_list', self.data_dir /
-                                      config['ashares']['SymbolsOfInterest']) if len(args) == 0 else args[0]
+        self.task_type = kwargs.get('task_type', 'ashares')
         self.results_file = kwargs.get('results_to_file', '')
         #self.results_file = f'{self.symbol_list}_{self.today}.csv'
+        if self.task_type == 'ashares':
+            self.data_dir = Path(__file__).parent / 'data/ashares/'
+            self.models_files = config[self.task_type]['ModelList'].split(',')
+        else:  # models for US stocks
+            self.data_dir = Path(__file__).parent / 'data/stocks/'
+            self.models_files = config['ustocks']['ModelList'].split(',')
+
+        self.symbol_list = kwargs.get('symbol_list', self.data_dir /
+                                      config['ashares']['SymbolsOfInterest']) if len(args) == 0 else args[0]
 
     def forecast(self):
 
@@ -78,10 +86,10 @@ class Tashares(object):
         result = pd.concat([forecasting_data[['symbol', 'date']], result], axis=1)
         result['score'] = score
         result = pd.concat([result, forecasting_data['shortname']], axis=1)
+        result = pd.concat([result, forecasting_data['sector']], axis=1)
         result = result.sort_values(['date', 'score'], ascending=False)
         result.reset_index(drop=True, inplace=True)
         result.insert(0, 'rank', result.index)
-        print(result)
 
         # save prediction
         if self.results_file != '':

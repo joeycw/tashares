@@ -21,5 +21,6 @@ class TestTashares(unittest.TestCase):
 
     def test_dumpfiles(self):
         data_dir = Path(__file__).parent.parent
-        result = dump_datafiles(data_dir / 'data/list_of_interest')
+        symbol_list = data_dir / 'data/ashares/list_of_interest'
+        result = dump_datafiles(data_dir=data_dir, symbol_list=symbol_list)
         self.assertEqual(result, None)
