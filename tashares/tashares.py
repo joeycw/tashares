@@ -45,7 +45,7 @@ class Tashares(object):
             self.models_files = config[self.task_type]['ModelList'].split(',')
         else:  # models for US stocks
             self.data_dir = Path(__file__).parent / 'data/stocks/'
-            self.models_files = config['ustocks']['ModelList'].split(',')
+            self.models_files = config['stocks']['ModelList'].split(',')
 
         self.symbol_list = kwargs.get('symbol_list', self.data_dir /
                                       config['ashares']['SymbolsOfInterest']) if len(args) == 0 else args[0]
@@ -90,8 +90,6 @@ class Tashares(object):
         result = result.sort_values(['date', 'score'], ascending=False)
         result.reset_index(drop=True, inplace=True)
         result.insert(0, 'rank', result.index)
-
-        logging.info(f"{result}")
 
         # save prediction
         if self.results_file != '':
