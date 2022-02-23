@@ -43,12 +43,13 @@ class Tashares(object):
         if self.task_type == 'ashares':
             self.data_dir = Path(__file__).parent / 'data/ashares/'
             self.models_files = config[self.task_type]['ModelList'].split(',')
+            self.symbol_list = kwargs.get('symbol_list', self.data_dir /
+                                          config['ashares']['SymbolsOfInterest']) if len(args) == 0 else args[0]
         else:  # models for US stocks
             self.data_dir = Path(__file__).parent / 'data/stocks/'
             self.models_files = config['stocks']['ModelList'].split(',')
-
-        self.symbol_list = kwargs.get('symbol_list', self.data_dir /
-                                      config['ashares']['SymbolsOfInterest']) if len(args) == 0 else args[0]
+            self.symbol_list = kwargs.get('symbol_list', self.data_dir /
+                                          config['stocks']['SymbolsOfInterest']) if len(args) == 0 else args[0]
 
     def forecast(self):
 
