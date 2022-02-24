@@ -102,11 +102,27 @@ Here are the test metrics for the model to predict next day's trending:
 |ranking PrecisionAt:top=20 |0.6239726027397255|
 |ranking RecallAt:top=20 |0.017115635510283153|
 
+There are some trivial cases in the whole test set that inflate the precision. Teating on a short symbol list of interest for next 1 day, PrecisionAt:top=10 gets 0.5227626459143966, about 2.3% more accurate than random guess, and about 5.1% over random at top=5.
+
+| A-Shares Metric | Day 1 | Day 2 | Day 5 |
+| ----------- | ----------- | ----------- | ----------- |
+|ranking PrecisionAt:top=5 | 0.537354 | 0.505058| 0.512451 |
+|ranking PrecisionAt:top=10 | 0.522763 | 0.500973 | 0.510700 |
+|random | 0.511253 | 0.498915 | **0.513445** |
+
+Note that in the Table forecasting on the next fifth day is no better than random guess.  
+
 Here is a real-world experiment lasting half year so far. The dotted vertical line indicates the date of forecasting launch, coupled with certain trading strategy.
 
 <img src="./tashares/docs/snapshot.png" alt="drawing" width="300"/>
 
-On US stocks, the same approach shows much worse ranking metrics that hasn't been applied to real world.
+On US stocks, the same approach shows similar ranking metrics that hasn't been applied to real world.
+
+| US Stocks Metric | Day 1 | Day 2 | Day 5 |
+| ----------- | ----------- | ----------- | ----------- |
+|ranking PrecisionAt:top=5 | 0.563060 | 0.573134 | 0.598881 |
+|ranking PrecisionAt:top=10 | 0.558582 | 0.569776 | 0.595149 |
+|random | 0.524855 | 0.537846 | 0.551322 |
 
 # other content
 
