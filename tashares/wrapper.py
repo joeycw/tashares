@@ -3,6 +3,7 @@ import multiprocessing
 import logging
 from pathlib import Path
 import pandas as pd
+from catboost.utils import eval_metric
 from tashares.cfg import config
 from tashares.stockjob import Stockjob
 
@@ -120,6 +121,75 @@ def dump_datafiles(symbol_list='', data_dir='', task_type='ashares'):
         dump_files=False,
         update_history=True,)
     dump_stockjobs(task_type, Path(data_dir), **data,)
+
+
+def load_data(data_file, queryid='date'):
+    try:
+        tp = pd.read_csv(data_file, sep='\t', iterator=True, chunksize=10000, dtype={
+            "date": "category", "symbol": "category", "queryid": "category"})
+        data = pd.concat(tp, ignore_index=True)
+        data = data.sort_values([queryid, 'queryid'])
+        data.reset_index(drop=True, inplace=True)
+        # encode categorical features
+        cols = ['date', 'symbol', 'queryid', 'sector', 'industry', 'shortname']
+        for col in cols:
+            data[col] = data[col].astype("category").cat.codes + 1
+        logging.info(f"{data_file} loaded")
+    except:
+        logging.critical(f"loading {data_file} failed")
+        data = pd.DataFrame()
+    return data
+
+
+def upgrade_targets(data, forecast_job='1', threshold=10):
+    '''handcrafted a set of targets
+    '''
+    if data.empty:
+        return data
+
+    targets = [c for c in data.columns if c.lower()[:6] == 'target']
+    assert len(targets) > 0
+    # copy the current job target
+    data['target'] = data[f"target_{forecast_job}"]
+
+    # set theshold to reduce variance
+    data.iloc[data['target'].index[data['target'] >
+                                   threshold], data.columns.get_loc('target')] = threshold
+    data.iloc[data['target'].index[data['target'] < -
+                                   threshold], data.columns.get_loc('target')] = - threshold
+
+    logging.info(
+        f"target : mean {data['target'].mean()} std {data['target'].std()} min {data['target'].min()} max {data['target'].max()}")
+
+    # update classification and ranking labels if needed
+    data['binary_label'] = data['target'].transform(
+        lambda x: 1 if x >= 0 else 0)
+    logging.info(
+        f"binary label 0 portion : {data['binary_label'].value_counts(normalize=True)[0]}")
+    data['ranking_label'] = data['target'].transform(lambda x: 5 if x >= 2 else 4 if x >=
+                                                     0.5 else 3 if x >= 0 else 2 if x >= -0.5 else 1 if x >= -2 else 0)
+
+    logging.debug(
+        f"ranking label portion : {data['ranking_label'].value_counts(normalize=False)}")
+
+    for col in data:
+        if col not in ['symbol', 'date', 'queryid', 'sector', 'industry', 'shortname']:
+            logging.debug(
+                f"{col}: max={data[col].max()}, min={data[col].min()}, mean={data[col].mean()}, std={data[col].std()}")
+
+    logging.info(
+        f"column number : {len(data.columns)}, sample size : {len(data)}")
+
+    return data
+
+
+def compute_metrics(labels, y_pred, queryid='date'):
+
+    result = [eval_metric(labels['binary_label'], y_pred, 'PrecisionAt:top=5', group_id=labels[queryid]),
+              eval_metric(labels['binary_label'], y_pred, 'PrecisionAt:top=10', group_id=labels[queryid]),
+              eval_metric(labels['binary_label'], y_pred, 'PrecisionAt:top=20', group_id=labels[queryid]),
+              eval_metric(labels['binary_label'], y_pred, 'PrecisionAt:top=50', group_id=labels[queryid]), ]
+    return result
 
 
 if __name__ == '__main__':

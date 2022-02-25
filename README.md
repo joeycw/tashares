@@ -17,7 +17,7 @@ make
 sudo make install
 ```
 
-Ref to <a href="https://pypi.org/project/TA-Lib/">Python wrapper for TA-LIB</a> for installatiob instructions on ther platforms.
+Ref to <a href="https://pypi.org/project/TA-Lib/">Python wrapper for TA-LIB</a> for installatiob instructions on other platforms.
 
 Then this is the recommended way to install tashares:
 
