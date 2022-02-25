@@ -83,7 +83,7 @@ class Tashares(object):
         forecasting_pool = Pool(
             data=forecasting_data.drop(drop_list, axis=1).values,
             label=forecasting_data['tag'].values,
-            group_id=forecasting_data['date'].values
+            group_id=forecasting_data['queryid'].values
         )
 
         result = pd.DataFrame()
