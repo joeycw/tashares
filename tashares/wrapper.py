@@ -18,6 +18,7 @@ wrapper_parameters = {
     'forecast_only': False,
     'dump_files': False,
     'start_from_date': '2015-01-01',
+    'max_training_date': '2020-01-01',
     'update_history': False,
 }
 

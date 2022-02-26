@@ -1,13 +1,4 @@
 from setuptools import setup, find_packages
-import unittest
-
-
-def my_test_suite():
-    test_loader = unittest.TestLoader()
-    test_suite = test_loader.discover('tashares/tests', pattern='test_*.py')
-    print(test_suite)
-    return test_suite
-
 
 setup(name='tashares',
       version='0.1.10',
@@ -20,10 +11,12 @@ setup(name='tashares',
       license='MIT',
       packages=find_packages(),
       include_package_data=True,
-      test_suite='setup.my_test_suite',
-      tests_require=[],
+      setup_requires=['pytest-runner'],
+      tests_require=['pytest'],
       install_requires=[
           'yfinance>=0.1.70',
-          'TA-Lib',
-          'catboost',
+          'TA-Lib>=0.4.24',
+          'catboost>=1.0.4',
       ])
+
+# python -m pytest -s

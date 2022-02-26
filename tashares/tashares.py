@@ -50,6 +50,7 @@ class Tashares(object):
             self.symbol_list = kwargs.get('symbol_list', self.data_dir /
                                           config['stocks']['SymbolsOfInterest']) if len(args) == 0 else args[0]
 
+        self.dump_data_to = kwargs.get('dump_data_to', self.data_dir / 'forecast.data')
         self.load_data_from = kwargs.get('load_data_from', '')
         if self.load_data_from != '':
             self.forecasting_data = load_data(self.load_data_from, queryid='date')
@@ -57,21 +58,27 @@ class Tashares(object):
         else:
             self.forecasting_data = pd.DataFrame()
 
+    def dump_forecast_data(self):
+
+        if self.forecasting_data.empty == False:
+            self.forecasting_data.to_csv(Path(self.dump_data_to), sep='\t', encoding='utf-8', index=False, float_format='%.6f',
+                                         header=True, )
+
     def forecast(self):
 
         if self.forecasting_data.empty:
 
             data = wrap_stockjobs(
                 symbols_file=self.symbol_list,
+                data_dir=self.data_dir,
+                start_from_date=self.start_from_date,
                 update_history=True,
                 forefast_only=True,
                 dump_files=False,
-                start_from_date=self.start_from_date,
-                data_dir=self.data_dir,
             )
-            forecasting_data = data['forecasting']
-        else:
-            forecasting_data = self.forecasting_data
+            self.forecasting_data = data['forecasting']
+
+        forecasting_data = self.forecasting_data
 
         if self.task_type == 'ashares':
             drop_list = ['symbol', 'date', 'queryid', 'sector', 'industry', 'shortname', 'tag', ] + \
