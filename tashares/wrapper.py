@@ -165,13 +165,6 @@ def upgrade_targets(data, forecast_job='1', threshold=10):
     # update classification and ranking labels if needed
     data['binary_label'] = data['target'].transform(
         lambda x: 1 if x >= 0 else 0)
-    logging.info(
-        f"binary label 0 portion : {data['binary_label'].value_counts(normalize=True)[0]}")
-    data['ranking_label'] = data['target'].transform(lambda x: 5 if x >= 2 else 4 if x >=
-                                                     0.5 else 3 if x >= 0 else 2 if x >= -0.5 else 1 if x >= -2 else 0)
-
-    logging.debug(
-        f"ranking label portion : {data['ranking_label'].value_counts(normalize=False)}")
 
     for col in data:
         if col not in ['symbol', 'date', 'queryid', 'sector', 'industry', 'shortname']:

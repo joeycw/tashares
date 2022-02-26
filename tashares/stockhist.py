@@ -46,12 +46,15 @@ class Stockhist(object):
         self.symbol = kwargs.get('symbol', '') if len(args) == 0 else args[0]
         self.ticker = yf.Ticker(self.symbol)
         self.data_dir = kwargs.get('data_dir', '')
-        if self.data_dir.is_dir():
-            self.history = self.load_history(self.history_filename)
 
         if kwargs.get('update_history', False):
             self.start_from_date = kwargs.get('start_from_date', self.start_from_date)
             self.update_history(start_from_date=self.start_from_date)
+        else:
+            if self.data_dir.is_dir():
+                self.history = self.load_history(self.history_filename)
+            else:
+                logging.critical(f"{self.data_dir} is not a directory")
         if kwargs.get('dump_files', False):
             self.dump_history_file(self.history_filename)
 

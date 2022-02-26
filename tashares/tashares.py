@@ -32,9 +32,6 @@ class Tashares(object):
         >>> tas()
     """
 
-    today = datetime.date.today().strftime('%Y-%m-%d')
-    start_from_date = (datetime.date.today() - datetime.timedelta(days=180)).strftime('%Y-%m-%d')
-
     def __init__(self, *args, **kwargs):
 
         self.task_type = kwargs.get('task_type', 'ashares')
@@ -71,7 +68,6 @@ class Tashares(object):
             data = wrap_stockjobs(
                 symbols_file=self.symbol_list,
                 data_dir=self.data_dir,
-                # start_from_date=self.start_from_date,
                 update_history=True,
                 forefast_only=True,
                 dump_files=False,
@@ -119,7 +115,7 @@ class Tashares(object):
         if self.results_file != '':
             result.to_csv(self.results_file, sep='\t', encoding='utf-8',
                           index=False, float_format='%.5f')
-            logging.info(f" today: {self.today}")
+            logging.info(f" today: {datetime.date.today().strftime('%Y-%m-%d')}")
             logging.info(f" symbol list: {self.symbol_list}")
             logging.info(f"results of {len(result)} ashares saved in {self.results_file}")
 

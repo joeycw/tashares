@@ -118,11 +118,13 @@ Here is a real-world experiment lasting half year so far. The dotted vertical li
 
 On US stocks, the same approach shows similar ranking metrics that hasn't been applied to real world.
 
+<!--- 
 | US Stocks Metric | Day 1 | Day 2 | Day 5 |
 | ----------- | ----------- | ----------- | ----------- |
 |ranking PrecisionAt:top=5 | 0.563060 | 0.573134 | 0.598881 |
 |ranking PrecisionAt:top=10 | 0.558582 | 0.569776 | 0.595149 |
 |random | 0.524855 | 0.537846 | 0.551322 |
+-->
 
 # other content
 
