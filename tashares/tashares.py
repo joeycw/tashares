@@ -71,7 +71,7 @@ class Tashares(object):
             data = wrap_stockjobs(
                 symbols_file=self.symbol_list,
                 data_dir=self.data_dir,
-                start_from_date=self.start_from_date,
+                # start_from_date=self.start_from_date,
                 update_history=True,
                 forefast_only=True,
                 dump_files=False,
