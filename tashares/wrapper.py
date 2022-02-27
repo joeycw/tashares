@@ -143,37 +143,15 @@ def load_data(data_file, queryid='date'):
 
 
 def upgrade_targets(data, forecast_job='1', threshold=10):
-    '''handcrafted a set of targets
-    '''
+
     if data.empty:
         return data
 
     targets = [c for c in data.columns if c.lower()[:6] == 'target']
     assert len(targets) > 0
-    # copy the current job target
     data['target'] = data[f"target_{forecast_job}"]
-
-    # set theshold to reduce variance
-    data.iloc[data['target'].index[data['target'] >
-                                   threshold], data.columns.get_loc('target')] = threshold
-    data.iloc[data['target'].index[data['target'] < -
-                                   threshold], data.columns.get_loc('target')] = - threshold
-
-    logging.info(
-        f"target : mean {data['target'].mean()} std {data['target'].std()} min {data['target'].min()} max {data['target'].max()}")
-
-    # update classification and ranking labels if needed
     data['binary_label'] = data['target'].transform(
         lambda x: 1 if x >= 0 else 0)
-
-    for col in data:
-        if col not in ['symbol', 'date', 'queryid', 'sector', 'industry', 'shortname']:
-            logging.debug(
-                f"{col}: max={data[col].max()}, min={data[col].min()}, mean={data[col].mean()}, std={data[col].std()}")
-
-    logging.info(
-        f"column number : {len(data.columns)}, sample size : {len(data)}")
-
     return data
 
 

@@ -102,7 +102,7 @@ Here are the test metrics for the model to predict next day's trending:
 |ranking PrecisionAt:top=20 |0.6239726027397255|
 |ranking RecallAt:top=20 |0.017115635510283153|
 
-There are some trivial cases in the whole test set that inflate the precision. Teating on a short symbol list of interest for next 1 day, PrecisionAt:top=10 gets 0.5227626459143966, about 2.3% more accurate than random guess, and about 5.1% over random at top=5.
+There are some trivial cases in the whole test set that inflate the precision. Testing on a short symbol list of interest for next 1 day, PrecisionAt:top=10 gets 0.522763, about 2.3% more accurate than random guess, and about 5.1% over random at top=5.
 
 | A-Shares Metric | Day 1 | Day 2 | Day 5 |
 | ----------- | ----------- | ----------- | ----------- |

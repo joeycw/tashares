@@ -19,7 +19,7 @@ class Tashares(object):
 
     Args:
         symbol_list (string, optional): the file name of symbol list. Default: 'list_of_interest' under the folder 'data'
-        task_type (string, optional): China 'ashares' or US 'stocks'. Default: 'ashares'
+        task_type (string, optional): China 'ashares' or US 'stocks' according to section names in cfg.ini. Default: 'ashares'
         results_to_file (string, optional): the file to save results. Default: '' don't dump results
 
     Examples:
@@ -36,17 +36,13 @@ class Tashares(object):
 
         self.task_type = kwargs.get('task_type', 'ashares')
         self.results_file = kwargs.get('results_to_file', '')
-        if self.task_type == 'ashares':
-            self.data_dir = Path(__file__).parent / 'data/ashares/'
-            self.models_files = config[self.task_type]['ModelList'].split(',')
-            self.symbol_list = kwargs.get('symbol_list', self.data_dir /
-                                          config['ashares']['SymbolsOfInterest']) if len(args) == 0 else args[0]
-        else:  # models for US stocks
-            self.data_dir = Path(__file__).parent / 'data/stocks/'
-            self.models_files = config['stocks']['ModelList'].split(',')
-            self.symbol_list = kwargs.get('symbol_list', self.data_dir /
-                                          config['stocks']['SymbolsOfInterest']) if len(args) == 0 else args[0]
 
+        self.data_dir = Path(__file__).parent / 'data/' / self.task_type
+        self.models_files = config[self.task_type]['ModelList'].split(',')
+        self.symbol_list = kwargs.get('symbol_list', self.data_dir /
+                                      config[self.task_type]['SymbolsOfInterest']) if len(args) == 0 else args[0]
+
+        # test purpose
         self.dump_data_to = kwargs.get('dump_data_to', self.data_dir / 'forecast.data')
         self.load_data_from = kwargs.get('load_data_from', '')
         if self.load_data_from != '':
@@ -97,7 +93,7 @@ class Tashares(object):
             prediction = cb.predict(forecasting_pool)
             result[Path(model_file).stem] = prediction
             score += prediction
-            # run compute metrics
+            # run compute metrics for test case
             if self.load_data_from != '':
                 return compute_metrics(forecasting_data, prediction)
         score = score / len(self.models_files)
