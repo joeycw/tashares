@@ -54,8 +54,8 @@ class Tashares(object):
     def dump_forecast_data(self):
 
         if self.forecasting_data.empty == False:
-            self.forecasting_data.to_csv(Path(self.dump_data_to), sep='\t', encoding='utf-8', index=False, float_format='%.6f',
-                                         header=True, )
+            self.forecasting_data.to_csv(Path(self.dump_data_to), sep='\t', encoding='utf-8',
+                                         index=False, float_format='%.6f', header=True, )
 
     def forecast(self):
 
@@ -98,7 +98,7 @@ class Tashares(object):
                 return compute_metrics(forecasting_data, prediction)
         score = score / len(self.models_files)
 
-        forecasting_data.reset_index(drop=False, inplace=True)
+        #forecasting_data.reset_index(drop=False, inplace=True)
         result = pd.concat([forecasting_data[['symbol', 'date']], result], axis=1)
         result['score'] = score
         result = pd.concat([result, forecasting_data['shortname']], axis=1)
